@@ -1,0 +1,13 @@
+{
+  "name": "create-webpack-library",
+  "version": "0.1.6",
+  "description": "Webpack/Es6/umd library template for `npm init`",
+  "repository": "allenhwkim/create-webpack-library",
+  "bin": {
+    "create-webpack-library": "index.js"
+  },
+  "files": [
+    "index.js",
+    "template"
+  ]
+}
