@@ -4,10 +4,14 @@
   "description": "Webpack/Es6/umd library template for `npm init`",
   "repository": "allenhwkim/create-webpack-library",
   "bin": {
-    "create-webpack-library": "index.js"
+    "create-webpack-library": "dist/main.js"
   },
   "files": [
-    "index.js",
-    "template"
-  ]
+    "dist"
+  ],
+  "devDependencies": {
+    "fs-extra": "^6.0.1",
+    "inquirer": "^6.0.0",
+    "mustache": "^2.3.0"
+  }
 }
