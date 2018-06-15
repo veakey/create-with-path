@@ -1,7 +1,10 @@
 const path = require('path'),
   mustache = require('mustache'),
-  fs = require('fs-extra');
-  inquirer = require('inquirer');
+  fs = require('fs-extra'),
+  inquirer = require('inquirer'),
+  Git = require("nodegit");
+
+console.log('process.argv', process.argv);
 
 function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach( f => {
@@ -29,6 +32,11 @@ function toQuestions(npmInit) {
   return questions;
 }
 
+/**
+ * params {
+ *   templateDir, filePath, answers  
+ * }
+ */
 function copyTemplate(params) {
   const cwd = process.cwd();
   const filePath = params.filePath.replace(params.templateDir,'');
@@ -38,11 +46,10 @@ function copyTemplate(params) {
 
   const contents = mustache.render(fileContents, params.answers);
   const outputPath = path.join(cwd, pkgName, filePath);
-  console.log({outputPath, contents})
   fs.outputFileSync(outputPath, contents);
 }
 
-function npmInitBase(npmInit, templateDir) {
+function npmInitPkg(npmInit, templateDir) {
   const questions = toQuestions(npmInit);
   inquirer.prompt(questions).then(answers => {
     walkDir(templateDir, filePath => {
@@ -50,11 +57,19 @@ function npmInitBase(npmInit, templateDir) {
     });
     return answers;
   }).then(answers => {
-    console.log(mustache.render(npmInit.completeMessage, answers));
+    console.info(mustache.render(npmInit.completeMessage, answers));
   }).catch(e => console.error(e) && process.exit(1));
 }
 
-const npmInit = require('./npm-init.json');
-const templateDir = require('path').resolve('./template');
+async function run() {
+  fs.removeSync('./.tmp');
+  const gitUrl = `https://github.com/${process.argv[2]}`;
+  const repo= await Git.Clone(gitUrl, "./.tmp");
 
-npmInitBase(npmInit, templateDir);
+  const npmInit = require('./.tmp/npm-init.json');
+  const templateDir = require('path').resolve('./.tmp/template');
+
+  npmInitPkg(npmInit, templateDir);
+};
+
+run();

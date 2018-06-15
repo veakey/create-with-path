@@ -1,10 +1,10 @@
 {
-  "name": "create-webpack-library",
-  "version": "0.1.6",
-  "description": "Webpack/Es6/umd library template for `npm init`",
-  "repository": "allenhwkim/create-webpack-library",
+  "name": "create-pkg",
+  "version": "0.2.0",
+  "description": "`npm init pkg <pkg-name>` core module",
+  "repository": "allenhwkim/create-pkg",
   "bin": {
-    "create-webpack-library": "dist/main.js"
+    "create-pkg": "dist/create-pkg.js"
   },
   "files": [
     "dist"
@@ -12,6 +12,10 @@
   "devDependencies": {
     "fs-extra": "^6.0.1",
     "inquirer": "^6.0.0",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "nodegit": "^0.22.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.6",
+    "webpack-node-externals": "^1.7.2"
   }
 }
