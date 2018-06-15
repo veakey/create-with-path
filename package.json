@@ -1,6 +1,6 @@
 {
   "name": "create-as",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "`npm init pkg <pkg-name>` core module",
   "repository": "allenhwkim/create-as",
   "scripts": {
@@ -12,7 +12,7 @@
   "files": [
     "index.js"
   ],
-  "dependencies" : {
+  "dependencies": {
     "fs-extra": "^6.0.1",
     "inquirer": "^6.0.0",
     "mustache": "^2.3.0"
