@@ -55,14 +55,14 @@ function copyTemplate(params) {
 function npmInitPkg(npmInitFile, templateDir) {
   npmInit = JSON.parse(fs.readFileSync(npmInitFile, 'utf8'));
   const questions = toQuestions(npmInit);
-  inquirer.prompt(questions).then(answers => {
-    walkDir(templateDir, filePath => {
-      copyTemplate({templateDir, filePath, answers})
-    });
-    return answers;
-  }).then(answers => {
-    console.info(mustache.render(npmInit.completeMessage, answers));
-  }).catch(e => console.error(e) && process.exit(1));
+  return inquirer.prompt(questions).then(answers => {
+      walkDir(templateDir, filePath => {
+        copyTemplate({templateDir, filePath, answers})
+      });
+      return answers;
+    }).then(answers => {
+      console.info(mustache.render(npmInit.completeMessage, answers));
+    }).catch(e => console.error(e) && process.exit(1));
 }
 
 async function run() {
@@ -74,7 +74,8 @@ async function run() {
   const npmInitFile = path.join(tmpDir, 'npm-init.json');
   const templateDir = path.join(tmpDir, 'template');
 
-  npmInitPkg(npmInitFile, templateDir);
+  await npmInitPkg(npmInitFile, templateDir);
+  fs.removeSync(tmpDir);
 }
 
 run();
