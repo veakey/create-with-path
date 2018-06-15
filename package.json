@@ -1,17 +1,17 @@
 {
-  "name": "create-pkg",
-  "version": "0.2.1",
+  "name": "create-as",
+  "version": "0.0.0",
   "description": "`npm init pkg <pkg-name>` core module",
-  "repository": "allenhwkim/create-pkg",
+  "repository": "allenhwkim/create-as",
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "rimraf dist && webpack"
   },
   "bin": {
-    "create-pkg": "dist/create-pkg.js"
+    "create-as": "dist/create-as.js"
   },
   "files": [
-    "dist"
+    "index.js"
   ],
   "devDependencies": {
     "child_process": "^1.0.2",

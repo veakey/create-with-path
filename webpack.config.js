@@ -1,7 +1,7 @@
 var nodeExternals = require('webpack-node-externals');
 module.exports = {
   entry: './index.js',
-  output: { filename: 'create-pkg.js'},
+  output: { filename: 'create-as.js'},
   mode: 'production',
   target: 'node', // important in order not to bundle built-in modules like path, fs, etc.
   externals: [nodeExternals({
