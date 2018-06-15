@@ -4,11 +4,10 @@
   "description": "`npm init pkg <pkg-name>` core module",
   "repository": "allenhwkim/create-as",
   "scripts": {
-    "prepublishOnly": "npm run build",
     "build": "rimraf dist && webpack"
   },
   "bin": {
-    "create-as": "dist/create-as.js"
+    "create-as": "index.js"
   },
   "files": [
     "index.js"
