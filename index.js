@@ -1,8 +1,9 @@
-const path = require('path'),
-  mustache = require('mustache'),
-  fs = require('fs-extra'),
-  inquirer = require('inquirer'),
-  Git = require("nodegit");
+const path = require('path');
+const mustache = require('mustache');
+const fs = require('fs-extra');
+const inquirer = require('inquirer');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 console.log('process.argv', process.argv);
 
@@ -49,7 +50,8 @@ function copyTemplate(params) {
   fs.outputFileSync(outputPath, contents);
 }
 
-function npmInitPkg(npmInit, templateDir) {
+function npmInitPkg(npmInitFile, templateDir) {
+  npmInit = JSON.parse(fs.readFileSync(npmInitFile, 'utf8'));
   const questions = toQuestions(npmInit);
   inquirer.prompt(questions).then(answers => {
     walkDir(templateDir, filePath => {
@@ -62,14 +64,15 @@ function npmInitPkg(npmInit, templateDir) {
 }
 
 async function run() {
-  fs.removeSync('./.tmp');
+  const tmpDir = path.join(process.cwd(), '.tmp');
+  fs.removeSync(tmpDir);
   const gitUrl = `https://github.com/${process.argv[2]}`;
-  const repo= await Git.Clone(gitUrl, "./.tmp");
+  const { stdout, stderr } = await exec(`git clone ${gitUrl} ${tmpDir}`);
 
-  const npmInit = require('./.tmp/npm-init.json');
-  const templateDir = require('path').resolve('./.tmp/template');
+  const npmInitFile = path.join(tmpDir, 'npm-init.json');
+  const templateDir = path.join(tmpDir, 'template');
 
-  npmInitPkg(npmInit, templateDir);
-};
+  npmInitPkg(npmInitFile, templateDir);
+}
 
 run();
