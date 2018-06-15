@@ -1,6 +1,6 @@
 {
   "name": "create-as",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "`npm init pkg <pkg-name>` core module",
   "repository": "allenhwkim/create-as",
   "scripts": {
