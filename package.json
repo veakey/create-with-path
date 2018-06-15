@@ -1,6 +1,6 @@
 {
   "name": "create-pkg",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "`npm init pkg <pkg-name>` core module",
   "repository": "allenhwkim/create-pkg",
   "scripts": {
