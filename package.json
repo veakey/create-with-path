@@ -1,7 +1,7 @@
 {
   "name": "create-with",
   "version": "0.4.0",
-  "description": "`npm init pkg <pkg-name>` core module",
+  "description": "`npm init with <repo-name>` base code",
   "repository": "allenhwkim/create-with",
   "scripts": {
     "build": "rimraf dist && webpack"
@@ -18,9 +18,8 @@
   "dependencies": {
     "fs-extra": "^6.0.1",
     "inquirer": "^6.0.0",
-    "mustache": "^2.3.0"
-  },
-  "devDependencies": {
+    "mustache": "^2.3.0",
     "node-fetch": "^2.1.2"
-  }
+  },
+  "devDependencies": {}
 }
