@@ -6,8 +6,7 @@ const fs = require('fs-extra');
 const inquirer = require('inquirer');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-
-console.log('process.argv', process.argv);
+const fetch = require('node-fetch');
 
 function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach( f => {
@@ -67,15 +66,39 @@ function npmInitPkg(npmInitFile, templateDir) {
 
 async function run() {
   const tmpDir = path.join(process.cwd(), '.tmp');
+  let gitRepo = process.argv[2];
   fs.removeSync(tmpDir);
-  const gitUrl = `https://github.com/${process.argv[2]}`;
-  const { stdout, stderr } = await exec(`git clone ${gitUrl} ${tmpDir}`);
 
-  const npmInitFile = path.join(tmpDir, 'npm-init.json');
-  const templateDir = path.join(tmpDir, 'template');
+  try {
+    if (gitRepo) {
+      gitRepo = gitRepo.match(/\//) ? gitRepo : `allenhwkim/${gitRepo}`;
+      const gitRepoUrl = `https://github.com/${gitRepo}`;
+      const gitRepoApiUrl = `https://api.github.com/repos/${gitRepo}`;
 
-  await npmInitPkg(npmInitFile, templateDir);
-  fs.removeSync(tmpDir);
+      // check if repo exists and has npm-init.json and template directory
+      let res = await fetch(gitRepoApiUrl);
+      if (!res.ok) throw 'Error: Invalid git repo.';
+      res = await fetch(gitRepoApiUrl + '/contents/npm-init.json');
+      if (!res.ok) throw 'Error: Cannot find npm-init.json';
+      res = await fetch(gitRepoApiUrl + '/contents/template');
+      if (!res.ok) throw 'Error: Cannot find template directory';
+
+    } else {
+      throw 'Error: git repository to initialize with. e.g. `npm init with custom-element`';
+    }
+    
+    const gitRepoUrl = `https://github.com/${gitRepo}`;
+    const { stdout, stderr } = await exec(`git clone ${gitRepoUrl} ${tmpDir}`);
+
+    const npmInitFile = path.join(tmpDir, 'npm-init.json');
+    const templateDir = path.join(tmpDir, 'template');
+
+    await npmInitPkg(npmInitFile, templateDir);
+  } catch(e) {
+    console.error(e);
+  } finally {
+    fs.removeSync(tmpDir);
+  }
 }
 
 run();

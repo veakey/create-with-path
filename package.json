@@ -1,8 +1,8 @@
 {
-  "name": "create-as",
+  "name": "create-with",
   "version": "0.4.0",
   "description": "`npm init pkg <pkg-name>` core module",
-  "repository": "allenhwkim/create-as",
+  "repository": "allenhwkim/create-with",
   "scripts": {
     "build": "rimraf dist && webpack"
   },
@@ -10,7 +10,7 @@
     "node": ">=7"
   },
   "bin": {
-    "create-as": "index.js"
+    "create-witn": "index.js"
   },
   "files": [
     "index.js"
@@ -19,5 +19,8 @@
     "fs-extra": "^6.0.1",
     "inquirer": "^6.0.0",
     "mustache": "^2.3.0"
+  },
+  "devDependencies": {
+    "node-fetch": "^2.1.2"
   }
 }
