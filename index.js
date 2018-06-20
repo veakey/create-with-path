@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// $ node index.js allenhwkim/custom-element
 
 const path = require('path');
 const mustache = require('mustache');
@@ -35,9 +36,8 @@ function toQuestions(npmInit) {
 }
 
 /**
- * params {
- *   templateDir, filePath, answers  
- * }
+ * copy files from template to project directory 
+ * params { templateDir, filePath, answers  }
  */
 function copyTemplate(params) {
   const cwd = process.cwd();
@@ -46,8 +46,13 @@ function copyTemplate(params) {
   const fileContents = fs.readFileSync(params.filePath, 'utf8');
   const pkgName = params.answers.name;
 
-  const contents = mustache.render(fileContents, params.answers);
   const outputPath = path.join(cwd, pkgName, filePath);
+  let contents = fileContents;
+  for (var key in params.answers) {
+    const regex = new RegExp(`{{\s*${key}\s*}}`, 'g');
+    contents = contents.replace(regex, params.answers[key]);
+  }
+
   fs.outputFileSync(outputPath, contents);
 }
 
