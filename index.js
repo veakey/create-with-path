@@ -76,7 +76,7 @@ async function run() {
 
   try {
     if (gitRepo) {
-      gitRepo = gitRepo.match(/\//) ? gitRepo : `allenhwkim/${gitRepo}`;
+      gitRepo = gitRepo.match(/\//) ? gitRepo : `npm-init/${gitRepo}`;
       const gitRepoUrl = `https://github.com/${gitRepo}`;
       const gitRepoApiUrl = `https://api.github.com/repos/${gitRepo}`;
 
