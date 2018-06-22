@@ -37,7 +37,7 @@ function toQuestions(npmInit) {
 
 /**
  * copy files from template to project directory 
- * params { templateDir, filePath, answers  }
+ * params { templateDir, filePath, answers, npmInit }
  */
 function copyTemplate(params) {
   const cwd = process.cwd();
@@ -47,21 +47,21 @@ function copyTemplate(params) {
   const pkgName = params.answers.name;
 
   const outputPath = path.join(cwd, pkgName, filePath);
-  let contents = fileContents;
-  for (var key in params.answers) {
-    const regex = new RegExp(`{{\s*${key}\s*}}`, 'g');
-    contents = contents.replace(regex, params.answers[key]);
-  }
+  const notToCompile = params.npmInit.compile.excludes.filter(re => filePath.match(new RegExp(re)));
+  const outputContents = notToCompile.length ? 
+    fileContents : mustache.render(fileContents, params.answers);
 
-  fs.outputFileSync(outputPath, contents);
+  fs.outputFileSync(outputPath, outputContents);
 }
 
 function npmInitPkg(npmInitFile, templateDir) {
   npmInit = JSON.parse(fs.readFileSync(npmInitFile, 'utf8'));
+  npmInit.compile = npmInit.compile || { with: 'mustache', excludes: ['\.html$'] };
+
   const questions = toQuestions(npmInit);
   return inquirer.prompt(questions).then(answers => {
       walkDir(templateDir, filePath => {
-        copyTemplate({templateDir, filePath, answers})
+        copyTemplate({templateDir, filePath, answers, npmInit})
       });
       return answers;
     }).then(answers => {
