@@ -89,7 +89,14 @@ async function run() {
       if (!res.ok) throw 'Error: Cannot find template directory';
 
     } else {
-      throw 'Error: git repository to initialize with. e.g. `npm init with custom-element`';
+      res = await fetch(`https://api.github.com/orgs/npm-init/repos`)
+        .then(res => res.json())
+        .then(json => 
+          json.map(repo => repo.name).filter(name => name !== 'create-with')
+        );
+      console.log('Usage, `npm init with ????`');
+      console.log(res.join('\n'));
+      process.exit(1);
     }
     
     const gitRepoUrl = `https://github.com/${gitRepo}`;
