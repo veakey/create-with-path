@@ -56,20 +56,20 @@ function copyTemplate(params) {
   const pkgName = params.answers.name || params.answers.projectName;
 
   const outputPath = path.join(cwd, pkgName, filePath);
-  const notToCompile = params.npmInit.compile.excludes.filter(re => filePath.match(new RegExp(re)));
+  // const notToCompile = params.npmInit.compile.excludes.filter(re => filePath.match(new RegExp(re)));
   try {
-    const outputContents = notToCompile.length ? fileContents : mustache.render(fileContents, params.answers);
+    const outputContents = mustache.render(fileContents, params.answers);
     fs.outputFileSync(outputPath, outputContents);
   } catch (e) {
-    console.error('Failed to compile file', params.filePath, fileContents);
-    console.error('compile exceptions', params.npmInit.compile.excludes);
-    throw e;
+    const outputContents = fileContents;
+    fs.outputFileSync(outputPath, outputContents);
+    // console.error('Failed to compile file', params.filePath, fileContents);
+    // console.error('compile exceptions', params.npmInit.compile.excludes);
   }
 }
 
 function npmInitPkg(npmInitFile, templateDir) {
   npmInit = JSON.parse(fs.readFileSync(npmInitFile, 'utf8'));
-  npmInit.compile = npmInit.compile || { with: 'mustache', excludes: ['\.html$'] };
 
   const questions = toQuestions(npmInit);
   return inquirer.prompt(questions).then(answers => {
