@@ -52,4 +52,10 @@ e.g. package.json
   "main": "dist/{{name}}.umd.js
 }
 
+## For Developers
+
+```
+$ node index.js allenhwkim/custom-element
+```
+
 MIT Licensed
