@@ -58,8 +58,7 @@ function copyTemplate(params) {
   const outputPath = path.join(cwd, pkgName, filePath);
   const notToCompile = params.npmInit.compile.excludes.filter(re => filePath.match(new RegExp(re)));
   try {
-    const outputContents = notToCompile.length ? 
-      fileContents : mustache.render(fileContents, params.answers);
+    const outputContents = notToCompile.length ? fileContents : mustache.render(fileContents, params.answers);
     fs.outputFileSync(outputPath, outputContents);
   } catch (e) {
     console.error('Failed to compile file', params.filePath, fileContents);
