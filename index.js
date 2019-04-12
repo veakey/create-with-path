@@ -60,13 +60,12 @@ function copyTemplate(params) {
   try {
     const outputContents = notToCompile.length ? 
       fileContents : mustache.render(fileContents, params.answers);
+    fs.outputFileSync(outputPath, outputContents);
   } catch (e) {
     console.error('Failed to compile file', params.filePath, fileContents);
     console.error('compile exceptions', params.npmInit.compile.excludes);
     throw e;
   }
-
-  fs.outputFileSync(outputPath, outputContents);
 }
 
 function npmInitPkg(npmInitFile, templateDir) {
