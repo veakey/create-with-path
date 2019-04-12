@@ -1,6 +1,6 @@
 {
   "name": "create-with",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "`npm init with <repo-name>` base code",
   "repository": "allenhwkim/create-with",
   "scripts": {
