@@ -60,6 +60,7 @@ function npmInitPkg(npmInitFile, templateDir) {
 
   const questions = toQuestions(npmInit);
   return inquirer.prompt(questions).then(answers => {
+    console.log('processing ... ', answers);
       walkDir(templateDir, filePath => {
         copyTemplate({templateDir, filePath, answers, npmInit})
       });

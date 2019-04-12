@@ -34,10 +34,6 @@ Thus, pleae create an [issue](https://github.com/npm-init/create-with/issues) fo
       "message": "Project Description"
     }
   },
-  "compile" : {
-    "with": "mustache",
-    "excludes": ["\.html$"]
-  },
   "completeMessage": "To get started:\n  cd {{name}}\n  npm install\n  npm start"
 }
 ```
