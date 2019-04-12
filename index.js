@@ -19,9 +19,18 @@ function walkDir(dir, callback) {
 };
 
 function toQuestions(npmInit) {
+  const defaultPrompts = {
+    projectName: {
+      type: 'string',
+      required: true,
+      default: 'my-awesome-project',
+      message: 'Project Name'
+    }
+  };
+  const prompts = Object.assign({}, defaultPrompts, npmInit.prompts);
   const questions = [];
-  for (var key in npmInit.prompts) {
-    let question = npmInit.prompts[key];
+  for (var key in prompts) {
+    let question = prompts[key];
     question.name = key;
     if (question.required) {
       question.validate = val => Promise.resolve(!!val);
@@ -44,7 +53,7 @@ function copyTemplate(params) {
   const filePath = params.filePath.replace(params.templateDir,'');
   const targetDir = path.join(cwd, filePath);
   const fileContents = fs.readFileSync(params.filePath, 'utf8');
-  const pkgName = params.answers.name;
+  const pkgName = params.answers.name || params.answers.projectName;
 
   const outputPath = path.join(cwd, pkgName, filePath);
   const notToCompile = params.npmInit.compile.excludes.filter(re => filePath.match(new RegExp(re)));
@@ -60,7 +69,7 @@ function npmInitPkg(npmInitFile, templateDir) {
 
   const questions = toQuestions(npmInit);
   return inquirer.prompt(questions).then(answers => {
-    console.log('processing ... ', answers);
+      console.log('processing ... ', answers);
       walkDir(templateDir, filePath => {
         copyTemplate({templateDir, filePath, answers, npmInit})
       });
