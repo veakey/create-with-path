@@ -6,7 +6,6 @@ const fs = require('fs-extra');
 const inquirer = require('inquirer');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const fetch = require('node-fetch');
 
 run();
 
@@ -15,19 +14,7 @@ async function run() {
   const tmpDir = path.join(process.cwd(), '.tmp');
   fs.removeSync(tmpDir);
 
-  if (!gitRepo) {
-    res = await fetch(`https://api.github.com/orgs/npm-init/repos`)
-      .then(res => res.json())
-      .then(json => 
-        json.map(repo => repo.name).filter(name => name !== 'create-with')
-      );
-    console.log('Usage, `npm init with ????`');
-    console.log(res.join('\n'));
-    process.exit(1);
-  }
-
-  const gitRepoUrl = `https://github.com/${gitRepo}`;
-  const { stdout, stderr } = await exec(`git clone ${gitRepoUrl} ${tmpDir}`);
+  const { stdout, stderr } = await exec(`git clone ${gitRepo} ${tmpDir}`);
 
   const npmInitFile = path.join(tmpDir, 'npm-init.json');
   const templateDir = path.join(tmpDir, 'template');
@@ -42,22 +29,24 @@ async function run() {
 
 // check if repo exists and has npm-init.json and template directory
 async function getGitRepo(arg) {
-  let gitRepo;
+  const gitRepo = arg.match(/\//) ? arg : `npm-init/${arg}` ;
 
-  if (arg) {
-    const argGitRepo = arg.match(/\//) ? arg : `npm-init/${arg}`;
-    const gitRepoUrl = `https://github.com/${argGitRepo}`;
-    const gitRepoApiUrl = `https://api.github.com/repos/${argGitRepo}`;
+  // if (arg) {
+  //   const argGitRepo = arg.match(/\//) ? arg : `npm-init/${arg}`;
+  //   const gitRepoUrl = `https://github.com/${argGitRepo}`;
+  //   const gitRepoApiUrl = `https://api.github.com/repos/${argGitRepo}`;
+  //
+  //   let res1 = await fetch(gitRepoApiUrl);
+  //   let res2 = await fetch(gitRepoApiUrl + '/contents/npm-init.json');
+  //   let res3 = await fetch(gitRepoApiUrl + '/contents/template');
+  //   if (res1.ok && res2.ok && res3.ok) {
+  //     gitRepo = argGitRepo;
+  //   } else {
+  //     console.error('Error: Invalid git repo. In must have npm-init.json and template directory.');
+  //   }
+  // }
 
-    let res1 = await fetch(gitRepoApiUrl);
-    let res2 = await fetch(gitRepoApiUrl + '/contents/npm-init.json');
-    let res3 = await fetch(gitRepoApiUrl + '/contents/template');
-    if (res1.ok && res2.ok && res3.ok) {
-      gitRepo = argGitRepo;
-    } else {
-      console.error('Error: Invalid git repo. In must have npm-init.json and template directory.');
-    }
-  } 
+  console.log('getGitRepo > ', gitRepo)
 
   return gitRepo;
 }
@@ -67,14 +56,14 @@ function npmInitPkg(npmInitFile, templateDir) {
 
   const questions = getQuestions(npmInit);
   return inquirer.prompt(questions).then(answers => {
-      console.log('processing ... ', answers);
-      walkDir(templateDir, filePath => {
-        copyTemplate({templateDir, filePath, answers, npmInit})
-      });
-      return answers;
-    }).then(answers => {
-      console.info(mustache.render(npmInit.completeMessage, answers));
-    }).catch(e => console.error(e) && process.exit(1));
+    console.log('processing ... ', answers);
+    walkDir(templateDir, filePath => {
+      copyTemplate({templateDir, filePath, answers, npmInit})
+    });
+    return answers;
+  }).then(answers => {
+    console.info(mustache.render(npmInit.completeMessage, answers));
+  }).catch(e => console.error(e) && process.exit(1));
 }
 
 function getQuestions(npmInit) {
@@ -96,7 +85,7 @@ function getQuestions(npmInit) {
     }
     if (question.type === 'string') {
       question.type = 'input';
-      question.filter = val => Promise.resolve(val.toLowerCase().replace(/\s+/g, '-'));   
+      question.filter = val => Promise.resolve(val.toLowerCase().replace(/\s+/g, '-'));
     }
     questions.push(question);
   }
@@ -104,7 +93,7 @@ function getQuestions(npmInit) {
 }
 
 /**
- * copy files from template to project directory 
+ * copy files from template to project directory
  * params { templateDir, filePath, answers, npmInit }
  */
 function copyTemplate(params) {
@@ -128,8 +117,8 @@ function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach( f => {
     let dirPath = path.join(dir, f);
     let isDirectory = fs.statSync(dirPath).isDirectory();
-    isDirectory ? 
-      walkDir(dirPath, callback) : callback(path.join(dir, f));
+    isDirectory ?
+        walkDir(dirPath, callback) : callback(path.join(dir, f));
   });
 };
 

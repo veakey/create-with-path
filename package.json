@@ -1,16 +1,13 @@
 {
-  "name": "create-with",
+  "name": "create-with-path",
   "version": "0.8.10",
   "description": "`npm init with <repo-name>` base code",
   "repository": "allenhwkim/create-with",
-  "scripts": {
-    "build": "rimraf dist && webpack"
-  },
   "engines": {
-    "node": ">=7"
+    "node": ">=15.15"
   },
   "bin": {
-    "create-witn": "index.js"
+    "create-with-path": "index.js"
   },
   "files": [
     "index.js"
